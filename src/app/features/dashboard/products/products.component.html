@@ -1,0 +1,363 @@
+<div class="p-4 sm:ml-64">
+    <div class="p-4 rounded-lg mt-14">
+        <div class="relative mb-4 flex items-center">
+            <input type="text"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                placeholder="Buscar producto, 6 Caracteres" (input)="searchProduct($event)">
+            <button (click)="openModal()" type="button" data-modal-target="crud-modal" data-modal-toggle="crud-modal"
+                class="bg-primary-500 hover:bg-primary-600 hover:cursor-pointer p-2 rounded-full h-11 w-11 ml-2">
+                <i class="ti ti-plus text-white text-lg"></i>
+            </button>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+
+            <!-- Input de busqueda -->
+
+            <div *ngFor="let product of products; trackBy:trackByProduct"
+                class="card border border-gray-200 rounded-lg">
+                <div class="card-body flex justify-between items-center ">
+                    <div>
+                        <!-- Nombre del producto y id del producto -->
+                        <h5 class="text-lg text-primary-500 font-medium">{{ product.name }}</h5>
+                        <p class="card-text text-primary-500">#{{ product.id }}</p>
+                    </div>
+                    <!-- Botones de editar y eliminar -->
+                    <div class="flex space-x-2">
+                        <button (click)="openModal(product)" type="button" data-modal-target="crud-modal"
+                            data-modal-toggle="crud-modal"
+                            class="bg-primary-500 hover:bg-primary-600 hover:cursor-pointer p-2 rounded-full h-11 w-11">
+                            <i class="ti ti-pencil-check text-white text-lg"></i>
+                        </button>
+                        <button (click)="this.productId = product.id" type="button" data-modal-target="popup-modal"
+                            data-modal-toggle="popup-modal"
+                            class="bg-red-500 hover:bg-red-600 hover:cursor-pointer p-2 rounded-full h-11 w-11">
+                            <i class="ti ti-trash text-white text-lg"></i>
+                        </button>
+                        <!-- <button type="button" data-modal-target="modal-send"
+                            data-modal-toggle="modal-send"
+                            class="bg-success-500 hover:bg-success-600 hover:cursor-pointer p-2 rounded-full h-11 w-11">
+                            <i class="ti ti-send text-white text-lg"></i>
+                        </button> -->
+                    </div>
+                </div>
+                <div class="card-body -mt-8">
+                    <!-- Descripción del producto -->
+                    <!-- <div class="mx-1">
+                    </div> -->
+                    <p class="card-text text-sm text-black">{{ product.description }}</p>
+
+                    <hr class="my-2 border border-gray-100">
+
+                    <!-- ALTURA, ANCHO, Y LARGO -->
+                    <div class="flex flex-row justify-between mt-6">
+                        <p class="card-text text-primary-500 font-medium">Altura: <span class="font-normal">{{
+                                product.height }} cm</span>
+                        </p>
+                        <p class="card-text text-primary-500 font-medium">Ancho: <span class="font-normal">{{
+                                product.width }} cm</span>
+                        </p>
+                        <p class="card-text text-primary-500 font-medium">Largo: <span class="font-normal">{{
+                                product.length }} cm</span>
+                        </p>
+
+                    </div>
+                </div>
+                <div class="card-footer flex justify-between">
+                    <div class="flex flex-col">
+                        <p class="card-text text-primary-500 font-medium mb-1 flex-col">Creado:</p>
+                        <span class="font-normal -mt-4">{{ product.createdAt | date }}</span>
+                    </div>
+                    <div class="flex flex-col p-0 m-0">
+                        <p class="card-text text-primary-500 font-medium mb-1 flex-col">Actualizado:</p>
+                        <span class="font-normal -mt-4">{{ product.updatedAt | date }}</span>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para eliminar -->
+<div id="popup-modal" data-modal-backdrop="static" tabindex="-1"
+    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative p-4 w-full max-w-md max-h-full">
+        <div class="relative bg-white rounded-lg shadow-sm">
+            <button type="button"
+                class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
+                data-modal-hide="popup-modal">
+                <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="p-4 md:p-5 text-center">
+                <svg class="mx-auto mb-4 text-gray-400 w-12 h-12" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 20 20">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+                <h3 class="text-lg font-normal text-gray-500">Estás seguro de que deseas
+                    eliminar este producto?</h3>
+                <p class="text-sm text-gray-500 pb-4">Esta acción no se puede deshacer.</p>
+                <button (click)="this.deleteProduct()" data-modal-hide="popup-modal" type="button"
+                    class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                    Eliminar
+                </button>
+                <button data-modal-hide="popup-modal" type="button"
+                    class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para agregar o editar -->
+<div id="crud-modal" data-modal-backdrop="static" tabindex="-1"
+    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative p-4 w-full max-w-md max-h-full">
+        <div class="relative bg-white rounded-lg shadow-sm">
+            <div class="relative bg-white rounded-lg shadow-sm">
+                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">
+                        {{ isCreateMode ? 'Crear nuevo producto' : 'Actualizar producto' }}
+                    </h3>
+                    <button type="button" (click)="closeModal()" data-modal-hide="crud-modal"
+                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
+                        data-modal-toggle="crud-modal" (click)="closeModal()">
+                        <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                        </svg>
+                        <span class="sr-only">Cerrar modal</span>
+                    </button>
+                </div>
+                <!-- Modal body -->
+                <form class="p-4 md:p-5" [formGroup]="productForm" (ngSubmit)="onSubmit()">
+                    <div class="grid gap-4 mb-4 grid-cols-2">
+                        <div class="col-span-2">
+                            <label for="name" class="block mb-2 text-sm font-medium text-gray-900">Nombre del
+                                producto</label>
+                            <input type="text" name="name" id="name" formControlName="name"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                                placeholder="Lavadora" required minlength="3" maxlength="100">
+                            <div
+                                class="text-red-600" *ngIf="productForm.get('name')?.invalid && (productForm.get('name')?.dirty || productForm.get('name')?.touched)">
+                                <div class="text-red-600" *ngIf="productForm.get('name')?.errors?.['required']">
+                                    El nombre es requerido.
+                                </div>
+                                <div class="text-red-600" *ngIf="productForm.get('name')?.errors?.['minlength']">
+                                    El nombre debe tener al menos 3 caracteres.
+                                </div>
+                                <div class="text-red-600" *ngIf="productForm.get('name')?.errors?.['maxlength']">
+                                    El nombre no debe tener más de 100 caracteres.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-span-2 sm:col-span-1">
+                            <label for="height" class="block mb-2 text-sm font-medium text-gray-900">Alto (cm)</label>
+                            <input type="number" name="height" id="height" formControlName="height"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                                placeholder="10" required min="0" step="0.01">
+                            <div
+                                class="text-red-600" *ngIf="productForm.get('height')?.invalid && (productForm.get('height')?.dirty || productForm.get('height')?.touched)">
+                                <div class="text-red-600" *ngIf="productForm.get('height')?.errors?.['required']">
+                                    El alto es requerido.
+                                </div>
+                                <div class="text-red-600" *ngIf="productForm.get('height')?.errors?.['min']">
+                                    El alto debe ser mayor o igual a 0.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-span-2 sm:col-span-1">
+                            <label for="length" class="block mb-2 text-sm font-medium text-gray-900">Largo (cm)</label>
+                            <input type="number" name="length" id="length" formControlName="length"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                                placeholder="10" required min="0" step="0.01">
+                            <div
+                                class="text-red-600" *ngIf="productForm.get('length')?.invalid && (productForm.get('length')?.dirty || productForm.get('length')?.touched)">
+                                <div class="text-red-600" *ngIf="productForm.get('length')?.errors?.['required']">
+                                    El largo es requerido.
+                                </div>
+                                <div class="text-red-600" *ngIf="productForm.get('length')?.errors?.['min']">
+                                    El largo debe ser mayor o igual a 0.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-span-2 sm:col-span-1">
+                            <label for="width" class="block mb-2 text-sm font-medium text-gray-900">Ancho (cm)</label>
+                            <input type="number" name="width" id="width" formControlName="width"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                                placeholder="10" required min="0" step="0.01">
+                            <div
+                                class="text-red-600" *ngIf="productForm.get('width')?.invalid && (productForm.get('width')?.dirty || productForm.get('width')?.touched)">
+                                <div class="text-red-600" *ngIf="productForm.get('width')?.errors?.['required']">
+                                    El ancho es requerido.
+                                </div>
+                                <div class="text-red-600" *ngIf="productForm.get('width')?.errors?.['min']">
+                                    El ancho debe ser mayor o igual a 0.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-span-2">
+                            <label for="description" class="block mb-2 text-sm font-medium text-gray-900">Descripción
+                                del producto</label>
+                            <textarea id="description" name="description" rows="4" formControlName="description"
+                                class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                                placeholder="Descripción del producto" required minlength="10"
+                                maxlength="500"></textarea>
+                            <div
+                                class="text-red-600" *ngIf="productForm.get('description')?.invalid && (productForm.get('description')?.dirty || productForm.get('description')?.touched)">
+                                <div class="text-red-600" *ngIf="productForm.get('description')?.errors?.['required']">
+                                    La descripción es requerida.
+                                </div>
+                                <div class="text-red-600" *ngIf="productForm.get('description')?.errors?.['minlength']">
+                                    La descripción debe tener al menos 10 caracteres.
+                                </div>
+                                <div class="text-red-600" *ngIf="productForm.get('description')?.errors?.['maxlength']">
+                                    La descripción no debe tener más de 500 caracteres.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex justify-end space-x-2">
+                        <button type="submit"
+                            class="py-3 px-4 inline-flex gap-x-2 text-sm font-semibold rounded-md border border-transparent bg-primary-600 text-white hover:bg-primary-700 flex-1 justify-center items-center">
+                            {{ isCreateMode ? 'Guardar' : 'Actualizar' }}
+                        </button>
+                        <button type="button" (click)="closeModal()" data-modal-hide="crud-modal"
+                            class="py-3 px-4 inline-flex gap-x-2 text-sm font-semibold rounded-md border border-transparent bg-red-600 text-white hover:bg-red-700 flex-1 justify-center items-center">
+                            Cancelar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-send" data-modal-backdrop="static" tabindex="-1"
+    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative p-4 w-full max-w-md max-h-full">
+        <div class="relative bg-white rounded-lg shadow-sm">
+            <div class="relative bg-white rounded-lg shadow-sm">
+                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">
+                        Realizar Envio
+                    </h3>
+                    <button type="button" (click)="closeModal()" data-modal-hide="modal-send"
+                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
+                        data-modal-toggle="modal-send" (click)="closeModal()">
+                        <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                        </svg>
+                        <span class="sr-only">Cerrar modal</span>
+                    </button>
+                </div>
+                <!-- Modal body -->
+                <form class="p-4 md:p-5" [formGroup]="productForm" (ngSubmit)="onSubmit()">
+                    <div class="grid gap-4 mb-4 grid-cols-2">
+                        <div class="col-span-2">
+                            <label for="name" class="block mb-2 text-sm font-medium text-gray-900">Nombre del
+                                producto</label>
+                            <input type="text" name="name" id="name" formControlName="name"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                                placeholder="Lavadora" required minlength="3" maxlength="100">
+                            <div
+                                class="text-red-600" *ngIf="productForm.get('name')?.invalid && (productForm.get('name')?.dirty || productForm.get('name')?.touched)">
+                                <div class="text-red-600" *ngIf="productForm.get('name')?.errors?.['required']">
+                                    El nombre es requerido.
+                                </div>
+                                <div class="text-red-600" *ngIf="productForm.get('name')?.errors?.['minlength']">
+                                    El nombre debe tener al menos 3 caracteres.
+                                </div>
+                                <div class="text-red-600" *ngIf="productForm.get('name')?.errors?.['maxlength']">
+                                    El nombre no debe tener más de 100 caracteres.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-span-2 sm:col-span-1">
+                            <label for="height" class="block mb-2 text-sm font-medium text-gray-900">Alto (cm)</label>
+                            <input type="number" name="height" id="height" formControlName="height"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                                placeholder="10" required min="0" step="0.01">
+                            <div
+                                class="text-red-600" *ngIf="productForm.get('height')?.invalid && (productForm.get('height')?.dirty || productForm.get('height')?.touched)">
+                                <div class="text-red-600" *ngIf="productForm.get('height')?.errors?.['required']">
+                                    El alto es requerido.
+                                </div>
+                                <div class="text-red-600" *ngIf="productForm.get('height')?.errors?.['min']">
+                                    El alto debe ser mayor o igual a 0.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-span-2 sm:col-span-1">
+                            <label for="length" class="block mb-2 text-sm font-medium text-gray-900">Largo (cm)</label>
+                            <input type="number" name="length" id="length" formControlName="length"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                                placeholder="10" required min="0" step="0.01">
+                            <div
+                                class="text-red-600" *ngIf="productForm.get('length')?.invalid && (productForm.get('length')?.dirty || productForm.get('length')?.touched)">
+                                <div class="text-red-600" *ngIf="productForm.get('length')?.errors?.['required']">
+                                    El largo es requerido.
+                                </div>
+                                <div class="text-red-600" *ngIf="productForm.get('length')?.errors?.['min']">
+                                    El largo debe ser mayor o igual a 0.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-span-2 sm:col-span-1">
+                            <label for="width" class="block mb-2 text-sm font-medium text-gray-900">Ancho (cm)</label>
+                            <input type="number" name="width" id="width" formControlName="width"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                                placeholder="10" required min="0" step="0.01">
+                            <div
+                                class="text-red-600" *ngIf="productForm.get('width')?.invalid && (productForm.get('width')?.dirty || productForm.get('width')?.touched)">
+                                <div class="text-red-600" *ngIf="productForm.get('width')?.errors?.['required']">
+                                    El ancho es requerido.
+                                </div>
+                                <div class="text-red-600" *ngIf="productForm.get('width')?.errors?.['min']">
+                                    El ancho debe ser mayor o igual a 0.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-span-2">
+                            <label for="description" class="block mb-2 text-sm font-medium text-gray-900">Descripción
+                                del producto</label>
+                            <textarea id="description" name="description" rows="4" formControlName="description"
+                                class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                                placeholder="Descripción del producto" required minlength="10"
+                                maxlength="500"></textarea>
+                            <div
+                                class="text-red-600" *ngIf="productForm.get('description')?.invalid && (productForm.get('description')?.dirty || productForm.get('description')?.touched)">
+                                <div class="text-red-600" *ngIf="productForm.get('description')?.errors?.['required']">
+                                    La descripción es requerida.
+                                </div>
+                                <div class="text-red-600" *ngIf="productForm.get('description')?.errors?.['minlength']">
+                                    La descripción debe tener al menos 10 caracteres.
+                                </div>
+                                <div class="text-red-600" *ngIf="productForm.get('description')?.errors?.['maxlength']">
+                                    La descripción no debe tener más de 500 caracteres.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex justify-end space-x-2">
+                        <button type="submit"
+                            class="py-3 px-4 inline-flex gap-x-2 text-sm font-semibold rounded-md border border-transparent bg-primary-600 text-white hover:bg-primary-700 flex-1 justify-center items-center">
+                            {{ isCreateMode ? 'Guardar' : 'Actualizar' }}
+                        </button>
+                        <button type="button" (click)="closeModal()" data-modal-hide="modal-send"
+                            class="py-3 px-4 inline-flex gap-x-2 text-sm font-semibold rounded-md border border-transparent bg-red-600 text-white hover:bg-red-700 flex-1 justify-center items-center">
+                            Cancelar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
